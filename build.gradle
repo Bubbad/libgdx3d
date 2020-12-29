@@ -23,7 +23,7 @@ allprojects {
     ext {
         appName = "libgdx"
         gdxVersion = '1.9.12'
-        ashleyVersion = '1.7.0'
+        ashleyVersion = '1.7.3'
         ktxVersion = '1.9.12-b1'
     }
 
