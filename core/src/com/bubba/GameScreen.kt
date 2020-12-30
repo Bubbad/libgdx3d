@@ -16,15 +16,14 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.bullet.Bullet
 import com.bubba.ecs.components.ModelComponent
 import com.bubba.ecs.entities.EntityFactory
-import com.bubba.ecs.systems.BulletSystem
+import com.bubba.ecs.systems.BulletCollisionSystem
 import com.bubba.ecs.systems.RenderSystem
 import ktx.app.KtxScreen
 import ktx.ashley.entity
 import ktx.log.info
 import ktx.log.logger
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute
-
-
+import com.bubba.ecs.systems.PlayerMoveSystem
 
 
 class GameScreen(private val dropGame: DropGame) : KtxScreen {
@@ -42,7 +41,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
     private val wallHorizontal = modelBuilder.createBox(40f, 20f, 1f, Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.RED), FloatAttribute.createShininess(16f)), (VertexAttributes.Usage.Position or VertexAttributes.Usage.Normal).toLong())
     private val wallVertical = modelBuilder.createBox(1f, 20f, 40f, com.badlogic.gdx.graphics.g3d.Material(com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createDiffuse(com.badlogic.gdx.graphics.Color.GREEN), com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createSpecular(com.badlogic.gdx.graphics.Color.WHITE), FloatAttribute.createShininess(16f)), (VertexAttributes.Usage.Position or VertexAttributes.Usage.Normal).toLong())
     private val groundModel = modelBuilder.createBox(40f, 1f, 40f, com.badlogic.gdx.graphics.g3d.Material(com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createDiffuse(com.badlogic.gdx.graphics.Color.YELLOW), com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createSpecular(com.badlogic.gdx.graphics.Color.BLUE), FloatAttribute.createShininess(16f)), (VertexAttributes.Usage.Position or VertexAttributes.Usage.Normal).toLong())
-    private val bulletSystem: BulletSystem
+    private val bulletCollisionSystem: BulletCollisionSystem
 
     init {
         Bullet.init()
@@ -56,8 +55,6 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         camera.far = 300f
         camera.update()
 
-        createGround()
-
         val modelBuilder = ModelBuilder()
         val material = Material(ColorAttribute.createDiffuse(Color.BLUE))
         model = modelBuilder.createBox(5f, 5f, 5f, material,
@@ -66,12 +63,12 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         environment.set(ColorAttribute.createAmbientLight(0.4f, 0.4f, 0.4f, 1.0f))
         environment.add(DirectionalLight().set(Color.WHITE, Vector3(1.0f, -0.8f, -0.2f)))
 
-        engine.entity {
-            this.entity.add(ModelComponent(model, 7f, 0f, 0f))
-        }
-
-        bulletSystem = BulletSystem()
+        bulletCollisionSystem = BulletCollisionSystem()
+        engine.addSystem(bulletCollisionSystem)
+        engine.addSystem(PlayerMoveSystem(camera))
         engine.addEntity(EntityFactory.createStaticEntity(model, 0f, 0f, 0f))
+        engine.addEntity(EntityFactory.createCharacter(model, 5f, 5f, 5f, bulletCollisionSystem))
+        createGround()
     }
 
     private fun createGround() {
@@ -89,14 +86,12 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
     override fun show() {
         super.show()
         engine.addSystem(RenderSystem(camera, environment))
-        engine.addSystem(bulletSystem)
-
     }
 
     override fun dispose() {
         super.dispose()
         model.dispose()
-        bulletSystem.dispose()
+        bulletCollisionSystem.dispose()
     }
 
 }

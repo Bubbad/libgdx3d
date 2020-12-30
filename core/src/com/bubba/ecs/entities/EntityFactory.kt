@@ -5,11 +5,17 @@ import com.badlogic.gdx.graphics.g3d.Model
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.math.collision.BoundingBox
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape
-import com.badlogic.gdx.physics.bullet.collision.btCollisionShape
+import com.badlogic.gdx.physics.bullet.collision.btBroadphaseProxy
+import com.badlogic.gdx.physics.bullet.collision.btCapsuleShape
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObject
+import com.badlogic.gdx.physics.bullet.collision.btPairCachingGhostObject
+import com.badlogic.gdx.physics.bullet.dynamics.btKinematicCharacterController
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody
 import com.bubba.MotionState
 import com.bubba.ecs.components.BulletComponent
+import com.bubba.ecs.components.CharacterMoveComponent
 import com.bubba.ecs.components.ModelComponent
+import com.bubba.ecs.systems.BulletCollisionSystem
 
 class EntityFactory {
     companion object {
@@ -37,6 +43,41 @@ class EntityFactory {
 
             entity.add(bulletComponent)
             entity.add(modelComponent)
+
+            return entity
+        }
+
+        fun createCharacter(model: Model,
+                             x: Float,
+                             y: Float,
+                             z: Float,
+                             bulletSystem: BulletCollisionSystem): Entity {
+            val entity = Entity()
+
+            val modelComponent = ModelComponent(model, x, y, z)
+            entity.add(modelComponent)
+
+            val ghostObject = btPairCachingGhostObject()
+            ghostObject.worldTransform = modelComponent.modelInstance.transform
+
+            val ghostShape = btCapsuleShape(2f, 2f)
+            ghostObject.collisionShape = ghostShape
+            ghostObject.collisionFlags = btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT
+            ghostObject.userData = entity
+
+            val characterController = btKinematicCharacterController(ghostObject, ghostShape, 0.35f)
+
+            val characterMoveComponent = CharacterMoveComponent(
+                    ghostShape,
+                    ghostObject,
+                    characterController)
+            entity.add(characterMoveComponent)
+
+            bulletSystem.collisionWorld.addCollisionObject(ghostObject,
+                    btBroadphaseProxy.CollisionFilterGroups.CharacterFilter,
+                    btBroadphaseProxy.CollisionFilterGroups.AllFilter)
+
+            bulletSystem.collisionWorld.addAction(characterController)
 
             return entity
         }

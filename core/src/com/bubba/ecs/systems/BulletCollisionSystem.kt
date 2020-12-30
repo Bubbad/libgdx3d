@@ -15,13 +15,13 @@ import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSol
 import com.bubba.ecs.components.BulletComponent
 import ktx.ashley.get
 
-class BulletSystem: EntitySystem(), EntityListener {
+class BulletCollisionSystem: EntitySystem(), EntityListener {
 
     private val collisionConfiguration = btDefaultCollisionConfiguration()
     private val collisionDispatcher = btCollisionDispatcher(collisionConfiguration)
     private val broadPhase = btDbvtBroadphase() // Is this OK?
     private val constraintSolver = btSequentialImpulseConstraintSolver()
-    private val collisionWorld = btDiscreteDynamicsWorld(collisionDispatcher, broadPhase, constraintSolver, collisionConfiguration)
+    public val collisionWorld = btDiscreteDynamicsWorld(collisionDispatcher, broadPhase, constraintSolver, collisionConfiguration)
     private val ghostpairCallback = btGhostPairCallback()
 
     private val maxSimulationSteps = 5
