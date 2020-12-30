@@ -9,6 +9,8 @@ object DesktopLauncher {
     @JvmStatic
     fun main(arg: Array<String>) {
         val config = LwjglApplicationConfiguration()
+        config.height = DropGame.VIRTUAL_HEIGHT
+        config.width = DropGame.VIRTUAL_WIDTH
         LwjglApplication(DropGame(), config)
     }
 }

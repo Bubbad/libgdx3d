@@ -1,82 +1,75 @@
 package com.bubba
 
-import com.badlogic.ashley.core.Entity
-import com.badlogic.gdx.audio.Music
-import com.badlogic.gdx.audio.Sound
-import com.badlogic.gdx.graphics.OrthographicCamera
-import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.PerspectiveCamera
+import com.badlogic.gdx.graphics.VertexAttributes
 import com.badlogic.gdx.graphics.g2d.BitmapFont
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.math.Rectangle
-import com.badlogic.gdx.math.Vector2
-import com.badlogic.gdx.utils.Array
-import com.bubba.ecs.components.MoveComponent
-import com.bubba.ecs.components.RainDropCounterComponent
-import com.bubba.ecs.components.RenderComponent
-import com.bubba.ecs.components.TransformComponent
-import com.bubba.ecs.systems.CollisionSystem
-import com.bubba.ecs.systems.InputSystem
-import com.bubba.ecs.systems.MoveSystem
-import com.bubba.ecs.systems.RaindropSpawnSystem
+import com.badlogic.gdx.graphics.g3d.Environment
+import com.badlogic.gdx.graphics.g3d.Material
+import com.badlogic.gdx.graphics.g3d.Model
+import com.badlogic.gdx.graphics.g3d.ModelBatch
+import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
+import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
+import com.badlogic.gdx.math.Vector3
+import com.bubba.ecs.components.ModelComponent
 import com.bubba.ecs.systems.RenderSystem
 import ktx.app.KtxScreen
 import ktx.ashley.entity
-import ktx.ashley.with
 import ktx.log.info
 import ktx.log.logger
 
 class GameScreen(private val dropGame: DropGame) : KtxScreen {
 
-    private val activeRaindrops: Array<Rectangle>
-    private val camera: OrthographicCamera
-    private lateinit var rainMusic: Music
-    private lateinit var dropSound: Sound
-    private lateinit var bucketTexture: Texture
-    private lateinit var dropTexture: Texture
-    private val batch: SpriteBatch = dropGame.batch
+    private val camera: PerspectiveCamera
+    private val batch = ModelBatch()
+    private val environment = Environment()
     private val font: BitmapFont = dropGame.font
     private val engine = dropGame.engine
     private val logger = logger<GameScreen>()
 
-    private lateinit var bucketEntity: Entity
+    private val model: Model
+    private val position = Vector3()
+
 
     init {
         logger.info { "Starting gamescreen" }
 
-        camera = OrthographicCamera()
-        camera.setToOrtho(false, 800f, 640f)
+        val fov = 67f
+        camera = PerspectiveCamera(fov, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
+        camera.position.set(10f, 10f, 10f)
+        camera.lookAt(0f,0f,0f)
+        camera.near = 1f
+        camera.far = 300f
+        camera.update()
 
-        activeRaindrops = Array()
-    }
+        val modelBuilder = ModelBuilder()
+        val material = Material(ColorAttribute.createDiffuse(Color.BLUE))
+        model = modelBuilder.createBox(5f, 5f, 5f, material,
+                (VertexAttributes.Usage.Normal or VertexAttributes.Usage.Position).toLong())
 
-    override fun show() {
-        rainMusic = dropGame.assets.get(MusicAssets.Rain).apply {
-            isLooping = true
-            play()
+        environment.set(ColorAttribute.createAmbientLight(0.4f, 0.4f, 0.4f, 1.0f))
+        environment.add(DirectionalLight().set(Color.WHITE, Vector3(1.0f, -0.8f, -0.2f)))
+
+        engine.entity {
+            this.entity.add(ModelComponent(model, 5f, 5f, 5f))
         }
-
-        bucketTexture = dropGame.assets.get(TextureAssets.Bucket)
-        bucketEntity = engine.entity {
-            with<RainDropCounterComponent>()
-            this.entity.add(TransformComponent(Rectangle(800f / 2, 20f, 64f, 64f)))
-            this.entity.add(RenderComponent(bucketTexture))
-            this.entity.add(MoveComponent(Vector2()))
-        }
-
-        engine.addSystem(RenderSystem(batch, font, camera, bucketEntity))
-
-        dropSound = dropGame.assets.get(SoundAssets.Drop)
-        engine.addSystem(CollisionSystem(bucketEntity, dropSound))
-        engine.addSystem(MoveSystem())
-        engine.addSystem(InputSystem(bucketEntity, camera))
-
-        dropTexture = dropGame.assets.get(TextureAssets.Drop)
-        engine.addSystem(RaindropSpawnSystem(dropTexture))
-
     }
 
     override fun render(delta: Float) {
         engine.update(delta)
+    }
+
+    override fun show() {
+        super.show()
+        engine.addSystem(RenderSystem(camera, environment))
+
+    }
+
+    override fun dispose() {
+        super.dispose()
+        model.dispose()
     }
 
 }
