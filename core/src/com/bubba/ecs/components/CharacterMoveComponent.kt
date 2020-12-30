@@ -10,7 +10,8 @@ import ktx.ashley.mapperFor
 class CharacterMoveComponent(
         val ghostShape: btConvexShape,
         val ghostObject: btPairCachingGhostObject,
-        val characterController: btKinematicCharacterController
+        val characterController: btKinematicCharacterController,
+        val movingDirection: Vector3
 ): Component {
 
     companion object {
@@ -18,5 +19,4 @@ class CharacterMoveComponent(
     }
 
     val characterDirection = Vector3()
-    val movingDirection = Vector3()
 }

@@ -65,12 +65,14 @@ class EntityFactory {
             ghostObject.collisionFlags = btCollisionObject.CollisionFlags.CF_CHARACTER_OBJECT
             ghostObject.userData = entity
 
-            val characterController = btKinematicCharacterController(ghostObject, ghostShape, 0.35f)
+            val movingDirection = Vector3()
+            val characterController = btKinematicCharacterController(ghostObject, ghostShape, 0.35f, movingDirection)
 
             val characterMoveComponent = CharacterMoveComponent(
                     ghostShape,
                     ghostObject,
-                    characterController)
+                    characterController,
+                    movingDirection)
             entity.add(characterMoveComponent)
 
             bulletSystem.collisionWorld.addCollisionObject(ghostObject,

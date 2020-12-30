@@ -29,7 +29,7 @@ class BulletCollisionSystem: EntitySystem(), EntityListener {
 
     init {
         broadPhase.overlappingPairCache.setInternalGhostPairCallback(ghostpairCallback)
-        collisionWorld.gravity = Vector3(0f, -0.5f, 0f)
+        collisionWorld.gravity = Vector3(0f, -10.5f, 0f)
     }
 
     override fun addedToEngine(engine: Engine) {

@@ -34,6 +34,7 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
         val deltaX = -Gdx.input.deltaX * 0.5f
         val deltaY = -Gdx.input.deltaY * 0.5f
         totalTime += deltaTime
+        cameraYRotationVector.set(0f,0f,0f)
         camera.rotate(camera.up, deltaX)
         cameraYRotationVector.set(camera.direction).crs(camera.up).nor()
         camera.direction.rotate(cameraYRotationVector, deltaY)
@@ -47,11 +48,15 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             characterMoveComponent!!.movingDirection.add(camera.direction)
         }
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            characterMoveComponent!!.movingDirection.sub(camera.direction)
+        }
 
         characterMoveComponent!!.characterController.setWalkDirection(characterMoveComponent!!.movingDirection)
 
         characterMoveComponent!!.ghostObject.getWorldTransform(ghostMatrix4)
         ghostMatrix4.getTranslation(playerTranslation)
+        //modelComponent!!.modelInstance.transform.setTranslation(playerTranslation.x, playerTranslation.y, playerTranslation.z)
 
         modelComponent!!.modelInstance.transform.set(
                 playerTranslation.x,

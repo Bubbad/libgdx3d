@@ -49,11 +49,6 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
 
         val fov = 67f
         camera = PerspectiveCamera(fov, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-        camera.position.set(40f, 70f, 40f)
-        camera.lookAt(0f,0f,0f)
-        camera.near = 1f
-        camera.far = 300f
-        camera.update()
 
         val modelBuilder = ModelBuilder()
         val material = Material(ColorAttribute.createDiffuse(Color.BLUE))
