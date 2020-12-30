@@ -13,12 +13,19 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.physics.bullet.Bullet
 import com.bubba.ecs.components.ModelComponent
+import com.bubba.ecs.entities.EntityFactory
+import com.bubba.ecs.systems.BulletSystem
 import com.bubba.ecs.systems.RenderSystem
 import ktx.app.KtxScreen
 import ktx.ashley.entity
 import ktx.log.info
 import ktx.log.logger
+import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute
+
+
+
 
 class GameScreen(private val dropGame: DropGame) : KtxScreen {
 
@@ -30,19 +37,26 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
     private val logger = logger<GameScreen>()
 
     private val model: Model
-    private val position = Vector3()
 
+    private val modelBuilder = ModelBuilder()
+    private val wallHorizontal = modelBuilder.createBox(40f, 20f, 1f, Material(ColorAttribute.createDiffuse(Color.WHITE), ColorAttribute.createSpecular(Color.RED), FloatAttribute.createShininess(16f)), (VertexAttributes.Usage.Position or VertexAttributes.Usage.Normal).toLong())
+    private val wallVertical = modelBuilder.createBox(1f, 20f, 40f, com.badlogic.gdx.graphics.g3d.Material(com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createDiffuse(com.badlogic.gdx.graphics.Color.GREEN), com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createSpecular(com.badlogic.gdx.graphics.Color.WHITE), FloatAttribute.createShininess(16f)), (VertexAttributes.Usage.Position or VertexAttributes.Usage.Normal).toLong())
+    private val groundModel = modelBuilder.createBox(40f, 1f, 40f, com.badlogic.gdx.graphics.g3d.Material(com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createDiffuse(com.badlogic.gdx.graphics.Color.YELLOW), com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createSpecular(com.badlogic.gdx.graphics.Color.BLUE), FloatAttribute.createShininess(16f)), (VertexAttributes.Usage.Position or VertexAttributes.Usage.Normal).toLong())
+    private val bulletSystem: BulletSystem
 
     init {
+        Bullet.init()
         logger.info { "Starting gamescreen" }
 
         val fov = 67f
         camera = PerspectiveCamera(fov, Gdx.graphics.width.toFloat(), Gdx.graphics.height.toFloat())
-        camera.position.set(10f, 10f, 10f)
+        camera.position.set(40f, 70f, 40f)
         camera.lookAt(0f,0f,0f)
         camera.near = 1f
         camera.far = 300f
         camera.update()
+
+        createGround()
 
         val modelBuilder = ModelBuilder()
         val material = Material(ColorAttribute.createDiffuse(Color.BLUE))
@@ -53,8 +67,19 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         environment.add(DirectionalLight().set(Color.WHITE, Vector3(1.0f, -0.8f, -0.2f)))
 
         engine.entity {
-            this.entity.add(ModelComponent(model, 5f, 5f, 5f))
+            this.entity.add(ModelComponent(model, 7f, 0f, 0f))
         }
+
+        bulletSystem = BulletSystem()
+        engine.addEntity(EntityFactory.createStaticEntity(model, 0f, 0f, 0f))
+    }
+
+    private fun createGround() {
+        engine.addEntity(EntityFactory.createStaticEntity(groundModel,0f, 0f, 0f))
+        engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0f, 10f, -20f))
+        engine.addEntity(EntityFactory.createStaticEntity(wallHorizontal, 0f, 10f, 20f))
+        engine.addEntity(EntityFactory.createStaticEntity(wallVertical, 20f, 10f, 0f))
+        engine.addEntity(EntityFactory.createStaticEntity(wallVertical, -20f, 10f, 0f))
     }
 
     override fun render(delta: Float) {
@@ -64,12 +89,14 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
     override fun show() {
         super.show()
         engine.addSystem(RenderSystem(camera, environment))
+        engine.addSystem(bulletSystem)
 
     }
 
     override fun dispose() {
         super.dispose()
         model.dispose()
+        bulletSystem.dispose()
     }
 
 }
