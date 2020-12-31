@@ -52,7 +52,7 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
             characterMoveComponent!!.movingDirection.sub(camera.direction)
         }
 
-        characterMoveComponent!!.characterController.setWalkDirection(characterMoveComponent!!.movingDirection)
+        characterMoveComponent!!.characterController.setWalkDirection(characterMoveComponent!!.movingDirection.scl(0.5f))
 
         characterMoveComponent!!.ghostObject.getWorldTransform(ghostMatrix4)
         ghostMatrix4.getTranslation(playerTranslation)

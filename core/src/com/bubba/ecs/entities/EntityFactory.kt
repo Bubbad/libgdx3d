@@ -66,7 +66,7 @@ class EntityFactory {
             ghostObject.userData = entity
 
             val movingDirection = Vector3()
-            val characterController = btKinematicCharacterController(ghostObject, ghostShape, 0.35f, movingDirection)
+            val characterController = btKinematicCharacterController(ghostObject, ghostShape, 0.35f, Vector3(0f, 1.0f, 0f))
 
             val characterMoveComponent = CharacterMoveComponent(
                     ghostShape,
