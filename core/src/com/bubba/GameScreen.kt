@@ -15,15 +15,15 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.bullet.Bullet
-import com.bubba.ecs.components.ModelComponent
 import com.bubba.ecs.entities.EntityFactory
 import com.bubba.ecs.systems.BulletCollisionSystem
 import com.bubba.ecs.systems.RenderSystem
 import ktx.app.KtxScreen
-import ktx.ashley.entity
 import ktx.log.info
 import ktx.log.logger
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute
+import com.bubba.ecs.components.EnemyComponent
+import com.bubba.ecs.components.PlayerComponent
 import com.bubba.ecs.systems.PlayerMoveSystem
 
 
@@ -63,7 +63,8 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         engine.addSystem(bulletCollisionSystem)
         engine.addSystem(PlayerMoveSystem(camera))
         engine.addEntity(EntityFactory.createStaticEntity(model, 0f, 0f, 0f))
-        engine.addEntity(EntityFactory.createCharacter(model, 5f, 5f, 5f, bulletCollisionSystem))
+        engine.addEntity(EntityFactory.createCharacter(model, 5f, 5f, 5f, bulletCollisionSystem).add(PlayerComponent()))
+        engine.addEntity(EntityFactory.createCharacter(model, 5f, 5f, 5f, bulletCollisionSystem).add(EnemyComponent()))
         createGround()
     }
 

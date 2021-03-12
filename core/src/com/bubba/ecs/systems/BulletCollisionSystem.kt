@@ -21,7 +21,7 @@ class BulletCollisionSystem: EntitySystem(), EntityListener {
     private val collisionDispatcher = btCollisionDispatcher(collisionConfiguration)
     private val broadPhase = btDbvtBroadphase() // Is this OK?
     private val constraintSolver = btSequentialImpulseConstraintSolver()
-    public val collisionWorld = btDiscreteDynamicsWorld(collisionDispatcher, broadPhase, constraintSolver, collisionConfiguration)
+    val collisionWorld = btDiscreteDynamicsWorld(collisionDispatcher, broadPhase, constraintSolver, collisionConfiguration)
     private val ghostpairCallback = btGhostPairCallback()
 
     private val maxSimulationSteps = 5

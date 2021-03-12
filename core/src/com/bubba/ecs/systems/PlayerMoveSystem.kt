@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
 import com.bubba.ecs.components.CharacterMoveComponent
 import com.bubba.ecs.components.ModelComponent
+import com.bubba.ecs.components.PlayerComponent
 import ktx.ashley.get
 
 private const val TIME_BETWEEN_PLAYER_JUMPS_MS = 1000
@@ -30,7 +31,10 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
     private val ghostMatrix4 = Matrix4()
 
     override fun addedToEngine(engine: Engine) {
-        engine.addEntityListener(Family.all(CharacterMoveComponent::class.java, ModelComponent::class.java).get(), this)
+        engine.addEntityListener(Family.all(
+            CharacterMoveComponent::class.java,
+            ModelComponent::class.java,
+            PlayerComponent::class.java).get(), this)
     }
 
     override fun update(deltaTime: Float) {

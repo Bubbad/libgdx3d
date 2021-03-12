@@ -48,10 +48,10 @@ class EntityFactory {
         }
 
         fun createCharacter(model: Model,
-                             x: Float,
-                             y: Float,
-                             z: Float,
-                             bulletSystem: BulletCollisionSystem): Entity {
+                            x: Float,
+                            y: Float,
+                            z: Float,
+                            bulletSystem: BulletCollisionSystem): Entity {
             val entity = Entity()
 
             val modelComponent = ModelComponent(model, x, y, z)
