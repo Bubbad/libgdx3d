@@ -77,10 +77,10 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
 
         characterMoveComponent!!.characterController.setWalkDirection(characterMoveComponent!!.movingDirection.scl(10f * deltaTime))
 
-        updateCharacterPositionAndRotationAccordingToBullet()
+        updateModelOfCharacterPositionAndRotationAccordingToBullet()
     }
 
-    private fun updateCharacterPositionAndRotationAccordingToBullet() {
+    private fun updateModelOfCharacterPositionAndRotationAccordingToBullet() {
         characterMoveComponent!!.ghostObject.getWorldTransform(ghostMatrix4)
         ghostMatrix4.getTranslation(playerTranslation)
 
@@ -94,8 +94,7 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
             camera.direction.x,
             camera.direction.y,
             camera.direction.z,
-            0f
-        )
+            0f)
     }
 
     private fun rotateCameraFromMouseMovement() {
