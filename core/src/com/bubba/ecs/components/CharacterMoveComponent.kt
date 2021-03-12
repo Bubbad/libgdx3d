@@ -18,5 +18,5 @@ class CharacterMoveComponent(
         val mapper = mapperFor<CharacterMoveComponent>()
     }
 
-    val characterDirection = Vector3()
+    //val characterDirection = Vector3() // Re-add when needed
 }
