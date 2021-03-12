@@ -14,6 +14,8 @@ import com.bubba.ecs.components.CharacterMoveComponent
 import com.bubba.ecs.components.ModelComponent
 import ktx.ashley.get
 
+private const val TIME_BETWEEN_PLAYER_JUMPS_MS = 1000
+
 class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), EntityListener {
 
     private var playerEntity: Entity? = null
@@ -21,6 +23,9 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
     private var modelComponent: ModelComponent? = null
     private val cameraYRotationVector = Vector3()
     private val playerTranslation = Vector3()
+    private val playerSidewaysTmpVector = Vector3()
+    private val playerJumpTmpVector = Vector3()
+    private var lastPlayerJump = 0L
     private val ghostMatrix4 = Matrix4()
 
     override fun addedToEngine(engine: Engine) {
@@ -33,11 +38,7 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
         }
 
         rotateCameraFromMouseMovement()
-
-        //characterMoveComponent!!.characterDirection.set(-1f, 0f, 0f).rot(modelComponent!!.modelInstance.transform).nor()
-
         moveCharacterIfKeysPressed(deltaTime)
-
         moveCameraToPlayerPosition()
     }
 
@@ -58,6 +59,20 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
             characterMoveComponent!!.movingDirection.sub(camera.direction)
+        }
+
+        playerSidewaysTmpVector.set(0f, 0f, 0f)
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            playerSidewaysTmpVector.set(camera.direction).crs(camera.up).scl(-1f)
+        } else if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            playerSidewaysTmpVector.set(camera.direction).crs(camera.up)
+        }
+        characterMoveComponent!!.movingDirection.add(playerSidewaysTmpVector)
+
+        if (Gdx.input.isKeyPressed(Input.Keys.SPACE) && System.currentTimeMillis() - lastPlayerJump > TIME_BETWEEN_PLAYER_JUMPS_MS) {
+            lastPlayerJump = System.currentTimeMillis()
+            playerJumpTmpVector.set(camera.up).scl(10f)
+            characterMoveComponent!!.characterController.jump(playerJumpTmpVector)
         }
 
         characterMoveComponent!!.characterController.setWalkDirection(characterMoveComponent!!.movingDirection.scl(10f * deltaTime))
