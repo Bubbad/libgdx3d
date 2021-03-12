@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.math.Matrix4
+import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
 import com.bubba.ecs.components.CharacterMoveComponent
 import com.bubba.ecs.components.ModelComponent
@@ -84,9 +85,7 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
         characterMoveComponent!!.ghostObject.getWorldTransform(ghostMatrix4)
         ghostMatrix4.getTranslation(playerTranslation)
 
-        // So far this has been enough - the camera.direction.x/y/z below likely is wrong(?)
-        //modelComponent!!.modelInstance.transform.setTranslation(playerTranslation.x, playerTranslation.y, playerTranslation.z)
-
+        // Should we fetch the quaternion of the ghostObject and put that in the modelInstance transform instead?
         modelComponent!!.modelInstance.transform.set(
             playerTranslation.x,
             playerTranslation.y,
