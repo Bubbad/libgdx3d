@@ -1,6 +1,7 @@
 package com.bubba
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.graphics.VertexAttributes
@@ -76,11 +77,17 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
 
     override fun render(delta: Float) {
         engine.update(delta)
+
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            Gdx.input.isCursorCatched = !Gdx.input.isCursorCatched
+        }
     }
 
     override fun show() {
         super.show()
         engine.addSystem(RenderSystem(camera, environment))
+
+        Gdx.input.isCursorCatched = true
     }
 
     override fun dispose() {
