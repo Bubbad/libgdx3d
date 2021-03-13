@@ -25,6 +25,7 @@ import ktx.log.logger
 import com.badlogic.gdx.graphics.g3d.attributes.FloatAttribute
 import com.bubba.ecs.components.EnemyComponent
 import com.bubba.ecs.components.PlayerComponent
+import com.bubba.ecs.systems.EnemySpawnSystem
 import com.bubba.ecs.systems.EnemySystem
 import com.bubba.ecs.systems.KillEnemyOnContactSystem
 import com.bubba.ecs.systems.PlayerMoveSystem
@@ -71,9 +72,9 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         engine.addSystem(ShootSystem(camera, bulletCollisionSystem))
         engine.addSystem(EnemySystem())
         engine.addSystem(KillEnemyOnContactSystem(this))
+        engine.addSystem(EnemySpawnSystem(model, -15f, 25f, -15f, bulletCollisionSystem))
         engine.addEntity(EntityFactory.createStaticEntity(model, 0f, 0f, 0f))
         engine.addEntity(EntityFactory.createCharacter(model, 5f, 25f, 5f, bulletCollisionSystem).add(PlayerComponent()))
-        engine.addEntity(EntityFactory.createCharacter(model, -15f, 25f, -15f, bulletCollisionSystem).add(EnemyComponent()))
         createGround()
     }
 
