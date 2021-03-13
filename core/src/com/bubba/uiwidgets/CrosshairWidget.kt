@@ -14,13 +14,16 @@ class CrosshairWidget(assetManager: AssetManager): Actor() {
     }
 
     private val crosshairDot: Image = Image(assetManager.get(TextureAssets.CrosshairDot))
+    private val crosshairRing: Image = Image(assetManager.get(TextureAssets.CrosshairRing))
 
     override fun draw(batch: Batch?, parentAlpha: Float) {
         crosshairDot.draw(batch, parentAlpha)
+        crosshairRing.draw(batch, parentAlpha)
     }
 
     override fun setPosition(x: Float, y: Float) {
         super.setPosition(x, y)
         crosshairDot.setPosition(x - WIDTH/2, y - HEIGHT/2)
+        crosshairRing.setPosition(x - WIDTH/2, y - HEIGHT/2)
     }
 }

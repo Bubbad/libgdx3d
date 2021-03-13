@@ -19,7 +19,8 @@ enum class MusicAssets(val path: String) {
 enum class TextureAssets(val path: String) {
     Bucket("bucket.png"),
     Drop("drop.png"),
-    CrosshairDot("crosshair/dot.png")
+    CrosshairDot("crosshair/dot.png"),
+    CrosshairRing("crosshair/ring.png")
 }
 
 enum class SkinAsset(val path: String) {
