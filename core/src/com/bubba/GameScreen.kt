@@ -33,7 +33,7 @@ import com.bubba.ecs.systems.ShootSystem
 
 class GameScreen(private val dropGame: DropGame) : KtxScreen {
 
-    private val gameScreenUI = GameScreenUI()
+    private lateinit var gameScreenUI: GameScreenUI
 
     private val camera: PerspectiveCamera
     private val batch = ModelBatch()
@@ -98,6 +98,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
     override fun show() {
         super.show()
         engine.addSystem(RenderSystem(camera, environment))
+        gameScreenUI = GameScreenUI(dropGame.assets)
 
         Gdx.input.isCursorCatched = true
     }
