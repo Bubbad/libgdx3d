@@ -51,6 +51,8 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
     private val groundModel = modelBuilder.createBox(40f, 1f, 40f, com.badlogic.gdx.graphics.g3d.Material(com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createDiffuse(com.badlogic.gdx.graphics.Color.YELLOW), com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute.createSpecular(com.badlogic.gdx.graphics.Color.BLUE), FloatAttribute.createShininess(16f)), (VertexAttributes.Usage.Position or VertexAttributes.Usage.Normal).toLong())
     private val bulletCollisionSystem: BulletCollisionSystem
 
+    private val playerComponent = PlayerComponent()
+
     init {
         Bullet.init()
         logger.info { "Starting gamescreen" }
@@ -74,7 +76,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         engine.addSystem(KillEnemyOnContactSystem(this))
         engine.addSystem(EnemySpawnSystem(model, -15f, 25f, -15f, bulletCollisionSystem))
         engine.addEntity(EntityFactory.createStaticEntity(model, 0f, 0f, 0f))
-        engine.addEntity(EntityFactory.createCharacter(model, 5f, 25f, 5f, bulletCollisionSystem).add(PlayerComponent()))
+        engine.addEntity(EntityFactory.createCharacter(model, 5f, 25f, 5f, bulletCollisionSystem).add(playerComponent))
         createGround()
     }
 
@@ -99,7 +101,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
     override fun show() {
         super.show()
         engine.addSystem(RenderSystem(camera, environment))
-        gameScreenUI = GameScreenUI(dropGame.assets)
+        gameScreenUI = GameScreenUI(dropGame.assets, playerComponent)
 
         Gdx.input.isCursorCatched = true
     }
