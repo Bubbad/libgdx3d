@@ -9,12 +9,17 @@ class PlayerComponent: Component {
     }
 
     private var score = 0
+    private var health = 50
 
     fun increaseScore() {
         score += 1
     }
 
-    fun getScore(): Int {
-        return score
+    fun getScore() = score
+
+    fun decreaseHealth(damage : Int) {
+        health -= damage
     }
+
+    fun getHealth() = health
 }

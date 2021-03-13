@@ -93,9 +93,9 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         gameScreenUI.update(delta)
         gameScreenUI.render()
 
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            Gdx.input.isCursorCatched = !Gdx.input.isCursorCatched
-        }
+//        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+//            Gdx.input.isCursorCatched = !Gdx.input.isCursorCatched
+//        }
     }
 
     override fun show() {
@@ -103,7 +103,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         engine.addSystem(RenderSystem(camera, environment))
         gameScreenUI = GameScreenUI(dropGame.assets, playerComponent)
 
-        Gdx.input.isCursorCatched = true
+        //Gdx.input.isCursorCatched = true
     }
 
     override fun dispose() {

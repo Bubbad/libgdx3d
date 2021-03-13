@@ -5,12 +5,14 @@ import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.bubba.ecs.components.PlayerComponent
 import com.bubba.uiwidgets.CrosshairWidget
+import com.bubba.uiwidgets.HealthWidget
 import com.bubba.uiwidgets.ScoreWidget
 
 class GameScreenUI(assetManager: AssetManager, playerComponent: PlayerComponent) {
     private val stage = Stage() // The book uses a FitViewport instead of default ScalingViewport. Switch?
     private val crosshairWidget = CrosshairWidget(assetManager)
     private val scoreWidget = ScoreWidget(assetManager, playerComponent)
+    private val healthWidget = HealthWidget(assetManager, playerComponent)
 
     init {
         crosshairWidget.setSize(CrosshairWidget.WIDTH.toFloat(), CrosshairWidget.HEIGHT.toFloat())
@@ -23,6 +25,9 @@ class GameScreenUI(assetManager: AssetManager, playerComponent: PlayerComponent)
         scoreWidget.setSize(50f, 20f)
         stage.addActor(scoreWidget)
 
+        healthWidget.setPosition((DropGame.VIRTUAL_WIDTH / 2).toFloat(), 35f)
+        healthWidget.setSize(200f, 50f)
+        stage.addActor(healthWidget)
     }
 
     fun update(deltaTime: Float) {
