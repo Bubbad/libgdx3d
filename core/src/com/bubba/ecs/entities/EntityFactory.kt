@@ -37,7 +37,7 @@ class EntityFactory {
 
             val modelComponent = ModelComponent(model, x, y, z)
             val motionState = MotionState(modelComponent.modelInstance.transform)
-            body.motionState = motionState
+            body.motionState = motionState // Why do we need the motion state? Not clear from book
 
             val bulletComponent = BulletComponent(motionState, bodyInfo, body)
 
