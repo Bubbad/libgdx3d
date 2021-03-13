@@ -28,6 +28,7 @@ import com.bubba.ecs.components.PlayerComponent
 import com.bubba.ecs.systems.EnemySystem
 import com.bubba.ecs.systems.KillEnemyOnContactSystem
 import com.bubba.ecs.systems.PlayerMoveSystem
+import com.bubba.ecs.systems.ShootSystem
 
 
 class GameScreen(private val dropGame: DropGame) : KtxScreen {
@@ -64,7 +65,8 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
 
         bulletCollisionSystem = BulletCollisionSystem()
         engine.addSystem(bulletCollisionSystem)
-        engine.addSystem(PlayerMoveSystem(camera, bulletCollisionSystem))
+        engine.addSystem(PlayerMoveSystem(camera))
+        engine.addSystem(ShootSystem(camera, bulletCollisionSystem))
         engine.addSystem(EnemySystem())
         engine.addSystem(KillEnemyOnContactSystem(this))
         engine.addEntity(EntityFactory.createStaticEntity(model, 0f, 0f, 0f))
