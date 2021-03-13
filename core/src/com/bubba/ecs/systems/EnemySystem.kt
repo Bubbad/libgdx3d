@@ -44,15 +44,13 @@ class EnemySystem: EntitySystem(), EntityListener {
         ) ?: return
 
         entities.forEach { entity ->
-            val characterMoveComponent = entity[CharacterMoveComponent.mapper]!!
             val enemyModelComponent = entity[ModelComponent.mapper]!!
-
-            characterMoveComponent.ghostObject.getWorldTransform(ghostMatrix4)
-            ghostMatrix4.getTranslation(enemyGhostTranslation)
-
             val playerModel = playerEntity[0][ModelComponent.mapper]!!
             val quaternion = getRotationBetweenEnemyAndPlayer(playerModel, enemyModelComponent)
 
+            val characterMoveComponent = entity[CharacterMoveComponent.mapper]!!
+            characterMoveComponent.ghostObject.getWorldTransform(ghostMatrix4)
+            ghostMatrix4.getTranslation(enemyGhostTranslation)
             enemyModelComponent.modelInstance.transform.set(
                 enemyGhostTranslation.x,
                 enemyGhostTranslation.y,
@@ -62,6 +60,9 @@ class EnemySystem: EntitySystem(), EntityListener {
                 quaternion.z,
                 quaternion.w
             )
+
+            characterMoveComponent.movingDirection.set(-1f, 0f, 0f).rot(enemyModelComponent.modelInstance.transform).scl(3f * deltaTime)
+            characterMoveComponent.characterController.setWalkDirection(characterMoveComponent.movingDirection)
         }
     }
 
