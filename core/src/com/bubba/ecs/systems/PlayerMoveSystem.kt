@@ -11,14 +11,20 @@ import com.badlogic.gdx.graphics.PerspectiveCamera
 import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.math.Quaternion
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.physics.bullet.collision.ClosestRayResultCallback
 import com.bubba.ecs.components.CharacterMoveComponent
+import com.bubba.ecs.components.EnemyComponent
 import com.bubba.ecs.components.ModelComponent
 import com.bubba.ecs.components.PlayerComponent
 import ktx.ashley.get
+import ktx.ashley.has
 
 private const val TIME_BETWEEN_PLAYER_JUMPS_MS = 1000
+private const val PLAYER_SHOOTING_RANGE_LIMIT = 50f
 
-class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), EntityListener {
+class PlayerMoveSystem(private val camera: PerspectiveCamera,
+                       private val bulletCollisionSystem: BulletCollisionSystem)
+    : EntitySystem(), EntityListener {
 
     private var playerEntity: Entity? = null
     private var characterMoveComponent: CharacterMoveComponent? = null
@@ -29,6 +35,10 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
     private val playerJumpTmpVector = Vector3()
     private var lastPlayerJump = 0L
     private val ghostMatrix4 = Matrix4()
+
+    private val rayTestCallBack = ClosestRayResultCallback(Vector3.Zero, Vector3.Z)
+    private val rayFrom = Vector3()
+    private val rayTo = Vector3()
 
     override fun addedToEngine(engine: Engine) {
         engine.addEntityListener(Family.all(
@@ -45,6 +55,13 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
         rotateCameraFromMouseMovement()
         moveCharacterIfKeysPressed(deltaTime)
         moveCameraToPlayerPosition()
+        fireIfMouseClicked()
+    }
+
+    private fun fireIfMouseClicked() {
+        if (Gdx.input.justTouched()) {
+            fire()
+        }
     }
 
     private fun moveCameraToPlayerPosition() {
@@ -107,6 +124,28 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera): EntitySystem(), E
         camera.rotate(camera.up, deltaX)
         cameraYRotationVector.set(camera.direction).crs(camera.up).nor()
         camera.direction.rotate(cameraYRotationVector, deltaY)
+    }
+
+    private fun fire() {
+        // The press is always in the middle of screen
+        val ray = camera.getPickRay((Gdx.graphics.width / 2).toFloat(), (Gdx.graphics.height / 2).toFloat())
+        rayFrom.set(ray.origin)
+        rayTo.set(ray.direction).scl(PLAYER_SHOOTING_RANGE_LIMIT).add(rayFrom)
+
+        rayTestCallBack.collisionObject = null
+        rayTestCallBack.closestHitFraction = 1f
+        rayTestCallBack.setRayFromWorld(rayFrom)
+        rayTestCallBack.setRayToWorld(rayTo)
+
+        bulletCollisionSystem.rayTest(rayFrom, rayTo, rayTestCallBack)
+
+        if (rayTestCallBack.hasHit() && rayTestCallBack.collisionObject.userData is Entity) {
+            val collisionObject = rayTestCallBack.collisionObject.userData as Entity
+
+            if (collisionObject.has(EnemyComponent.mapper)) {
+                collisionObject[EnemyComponent.mapper]!!.isDead = true
+            }
+        }
     }
 
     override fun entityAdded(entity: Entity) {

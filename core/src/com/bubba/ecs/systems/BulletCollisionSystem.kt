@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.EntityListener
 import com.badlogic.ashley.core.EntitySystem
 import com.badlogic.ashley.core.Family
 import com.badlogic.gdx.math.Vector3
+import com.badlogic.gdx.physics.bullet.collision.RayResultCallback
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher
 import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration
@@ -63,6 +64,9 @@ class BulletCollisionSystem: EntitySystem(), EntityListener {
             collisionWorld.removeCollisionObject(characterMoveComponent.ghostObject)
         }
     }
+
+    fun rayTest(rayFromWorld: Vector3, rayToWorld: Vector3, resultCallback: RayResultCallback) =
+        collisionWorld.rayTest(rayFromWorld, rayToWorld, resultCallback)
 
     fun dispose() {
         collisionWorld.dispose()
