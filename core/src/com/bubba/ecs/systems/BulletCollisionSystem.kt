@@ -12,8 +12,12 @@ import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration
 import com.badlogic.gdx.physics.bullet.collision.btGhostPairCallback
 import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld
 import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver
+import com.bubba.GameScreen
+import com.bubba.PlayerCollidingWithEnemyListener
 import com.bubba.ecs.components.BulletComponent
+import com.bubba.ecs.components.CharacterMoveComponent
 import ktx.ashley.get
+import ktx.ashley.has
 
 class BulletCollisionSystem: EntitySystem(), EntityListener {
 
@@ -27,9 +31,13 @@ class BulletCollisionSystem: EntitySystem(), EntityListener {
     private val maxSimulationSteps = 5
     private val fixedSimulationTimeStep = 1 / 60f
 
+    private val playerCollidingWithEnemyListener = PlayerCollidingWithEnemyListener()
+
     init {
         broadPhase.overlappingPairCache.setInternalGhostPairCallback(ghostpairCallback)
         collisionWorld.gravity = Vector3(0f, -10.5f, 0f)
+
+        playerCollidingWithEnemyListener.enable()
     }
 
     override fun addedToEngine(engine: Engine) {
@@ -46,8 +54,14 @@ class BulletCollisionSystem: EntitySystem(), EntityListener {
     }
 
     override fun entityRemoved(entity: Entity) {
-        val bulletComponent = entity[BulletComponent.mapper]!!
-        collisionWorld.removeRigidBody(bulletComponent.body)
+        if (entity.has(BulletComponent.mapper)) {
+            val bulletComponent = entity[BulletComponent.mapper]!!
+            collisionWorld.removeRigidBody(bulletComponent.body)
+        } else if (entity.has(CharacterMoveComponent.mapper)) {
+            val characterMoveComponent = entity[CharacterMoveComponent.mapper]!!
+            collisionWorld.removeCharacter(characterMoveComponent.characterController)
+            collisionWorld.removeCollisionObject(characterMoveComponent.ghostObject)
+        }
     }
 
     fun dispose() {
@@ -57,6 +71,7 @@ class BulletCollisionSystem: EntitySystem(), EntityListener {
         collisionConfiguration.dispose()
         collisionDispatcher.dispose()
         broadPhase.dispose()
+        playerCollidingWithEnemyListener.dispose()
     }
 
 }
