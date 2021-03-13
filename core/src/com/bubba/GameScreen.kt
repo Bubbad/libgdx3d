@@ -33,6 +33,8 @@ import com.bubba.ecs.systems.ShootSystem
 
 class GameScreen(private val dropGame: DropGame) : KtxScreen {
 
+    private val gameScreenUI = GameScreenUI()
+
     private val camera: PerspectiveCamera
     private val batch = ModelBatch()
     private val environment = Environment()
@@ -85,6 +87,8 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
 
     override fun render(delta: Float) {
         engine.update(delta)
+        gameScreenUI.update(delta)
+        gameScreenUI.render()
 
         if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
             Gdx.input.isCursorCatched = !Gdx.input.isCursorCatched
@@ -102,6 +106,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         super.dispose()
         model.dispose()
         bulletCollisionSystem.dispose()
+        gameScreenUI.dispose()
     }
 
     fun remove(entity: Entity) {
@@ -109,4 +114,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         this.bulletCollisionSystem.entityRemoved(entity)
     }
 
+    override fun resize(width: Int, height: Int) {
+        super.resize(width, height) // TODO Resize UI
+    }
 }

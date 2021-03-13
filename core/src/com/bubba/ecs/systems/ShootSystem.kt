@@ -51,7 +51,4 @@ class ShootSystem(private val camera: PerspectiveCamera,
             }
         }
     }
-
-
-
 }

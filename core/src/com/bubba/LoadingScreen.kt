@@ -43,5 +43,6 @@ class LoadingScreen(private val dropGame: DropGame) : KtxScreen {
         MusicAssets.values().map { dropGame.assets.load(it) }
         SoundAssets.values().map { dropGame.assets.load(it) }
         TextureAssets.values().map { dropGame.assets.load(it) }
+        SkinAsset.values().map { dropGame.assets.load(it) }
     }
 }
