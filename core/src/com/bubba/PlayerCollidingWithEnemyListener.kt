@@ -5,6 +5,7 @@ import com.badlogic.gdx.physics.bullet.collision.ContactListener
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject
 import com.bubba.ecs.components.CharacterMoveComponent
 import com.bubba.ecs.components.EnemyComponent
+import com.bubba.ecs.components.PlayerComponent
 import ktx.ashley.get
 import ktx.ashley.has
 import ktx.ashley.hasNot
@@ -27,10 +28,18 @@ class PlayerCollidingWithEnemyListener : ContactListener() {
 
         if (entity0.has(EnemyComponent.mapper)) {
             val enemyComponent = entity0[EnemyComponent.mapper]!!
+
+            if (enemyComponent.isDead) return
+
             enemyComponent.isDead = true
+            entity1[PlayerComponent.mapper]!!.decreaseHealth(10)
         } else if (entity1.has(EnemyComponent.mapper)) {
             val enemyComponent = entity1[EnemyComponent.mapper]!!
+
+            if (enemyComponent.isDead) return
+
             enemyComponent.isDead = true
+            entity0[PlayerComponent.mapper]!!.decreaseHealth(10)
         }
     }
 }

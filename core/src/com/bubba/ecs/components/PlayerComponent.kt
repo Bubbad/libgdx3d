@@ -9,7 +9,7 @@ class PlayerComponent: Component {
     }
 
     private var score = 0
-    private var health = 50
+    private var health = 100
 
     fun increaseScore() {
         score += 1
