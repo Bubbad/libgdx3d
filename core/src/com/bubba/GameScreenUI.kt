@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.bubba.ecs.components.PlayerComponent
 import com.bubba.uiwidgets.CrosshairWidget
 import com.bubba.uiwidgets.HealthWidget
+import com.bubba.uiwidgets.PauseWidget
 import com.bubba.uiwidgets.ScoreWidget
 
 class GameScreenUI(assetManager: AssetManager, playerComponent: PlayerComponent) {
@@ -13,6 +14,7 @@ class GameScreenUI(assetManager: AssetManager, playerComponent: PlayerComponent)
     private val crosshairWidget = CrosshairWidget(assetManager)
     private val scoreWidget = ScoreWidget(assetManager, playerComponent)
     private val healthWidget = HealthWidget(assetManager, playerComponent)
+    private val pauseWidget = PauseWidget(assetManager, stage)
 
     init {
         crosshairWidget.setSize(CrosshairWidget.WIDTH.toFloat(), CrosshairWidget.HEIGHT.toFloat())
@@ -28,10 +30,23 @@ class GameScreenUI(assetManager: AssetManager, playerComponent: PlayerComponent)
         healthWidget.setPosition((DropGame.VIRTUAL_WIDTH / 2).toFloat(), 35f)
         healthWidget.setSize(200f, 50f)
         stage.addActor(healthWidget)
+
+        pauseWidget.setPosition(
+            (DropGame.VIRTUAL_WIDTH / 2).toFloat(),
+            (DropGame.VIRTUAL_HEIGHT / 2).toFloat())
+        pauseWidget.setSize(200f, 200f)
     }
 
     fun update(deltaTime: Float) {
         stage.act(deltaTime)
+    }
+
+    fun showPauseMenu(shouldShow: Boolean) {
+        if (shouldShow) {
+            pauseWidget.showWindow()
+        } else {
+            pauseWidget.hideWindow()
+        }
     }
 
     fun render() {

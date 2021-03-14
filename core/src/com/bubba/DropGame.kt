@@ -26,9 +26,8 @@ class DropGame : KtxGame<KtxScreen>() {
         batch = SpriteBatch()
         font = BitmapFont()
         font.data.setScale(1.5f)
-        gameScreen = GameScreen(this)
         loadingScreen = LoadingScreen(this)
-        addScreen(gameScreen)
+
         addScreen(loadingScreen)
         setScreen<LoadingScreen>()
         super.create()

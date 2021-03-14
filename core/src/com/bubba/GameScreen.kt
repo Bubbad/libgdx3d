@@ -28,6 +28,7 @@ import com.bubba.ecs.components.PlayerComponent
 import com.bubba.ecs.systems.EnemySpawnSystem
 import com.bubba.ecs.systems.EnemySystem
 import com.bubba.ecs.systems.KillEnemyOnContactSystem
+import com.bubba.ecs.systems.PauseGameSystem
 import com.bubba.ecs.systems.PlayerMoveSystem
 import com.bubba.ecs.systems.ShootSystem
 
@@ -68,6 +69,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         environment.set(ColorAttribute.createAmbientLight(0.4f, 0.4f, 0.4f, 1.0f))
         environment.add(DirectionalLight().set(Color.WHITE, Vector3(1.0f, -0.8f, -0.2f)))
 
+        gameScreenUI = GameScreenUI(dropGame.assets, playerComponent)
         bulletCollisionSystem = BulletCollisionSystem()
         engine.addSystem(bulletCollisionSystem)
         engine.addSystem(PlayerMoveSystem(camera))
@@ -75,9 +77,13 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         engine.addSystem(EnemySystem())
         engine.addSystem(KillEnemyOnContactSystem(this))
         engine.addSystem(EnemySpawnSystem(model, 0f, 25f, 0f, bulletCollisionSystem))
+        engine.addSystem(RenderSystem(camera, environment))
+        engine.addSystem(PauseGameSystem(gameScreenUI))
+
         engine.addEntity(EntityFactory.createStaticEntity(model, 0f, 0f, 0f))
         engine.addEntity(EntityFactory.createCharacter(model, 5f, 25f, 5f, bulletCollisionSystem).add(playerComponent))
         createGround()
+
     }
 
     private fun createGround() {
@@ -100,8 +106,6 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
 
     override fun show() {
         super.show()
-        engine.addSystem(RenderSystem(camera, environment))
-        gameScreenUI = GameScreenUI(dropGame.assets, playerComponent)
 
         Gdx.input.isCursorCatched = true
     }

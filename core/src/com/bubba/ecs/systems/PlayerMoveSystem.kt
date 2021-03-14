@@ -62,6 +62,7 @@ class PlayerMoveSystem(private val camera: PerspectiveCamera) : EntitySystem(), 
 
     private fun moveCharacterIfKeysPressed(deltaTime: Float) {
         characterMoveComponent!!.movingDirection.set(0f, 0f, 0f)
+
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
             characterMoveComponent!!.movingDirection.add(camera.direction)
         }

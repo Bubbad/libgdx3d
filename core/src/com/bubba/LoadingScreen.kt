@@ -34,6 +34,7 @@ class LoadingScreen(private val dropGame: DropGame) : KtxScreen {
         }
 
         if (Gdx.input.isTouched && dropGame.assets.isFinished) {
+            dropGame.addScreen(GameScreen(dropGame))
             dropGame.setScreen<GameScreen>()
             dispose()
         }
