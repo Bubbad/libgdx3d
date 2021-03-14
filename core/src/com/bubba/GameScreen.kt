@@ -70,6 +70,8 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         environment.add(DirectionalLight().set(Color.WHITE, Vector3(1.0f, -0.8f, -0.2f)))
 
         gameScreenUI = GameScreenUI(dropGame.assets, playerComponent)
+        Gdx.input.inputProcessor = gameScreenUI.stage
+
         bulletCollisionSystem = BulletCollisionSystem()
         engine.addSystem(bulletCollisionSystem)
         engine.addSystem(PlayerMoveSystem(camera))
@@ -98,10 +100,6 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         engine.update(delta)
         gameScreenUI.update(delta)
         gameScreenUI.render()
-
-        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            Gdx.input.isCursorCatched = !Gdx.input.isCursorCatched
-        }
     }
 
     override fun show() {

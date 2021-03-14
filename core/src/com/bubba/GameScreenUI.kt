@@ -1,6 +1,7 @@
 package com.bubba
 
 import com.badlogic.ashley.core.Engine
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.bubba.ecs.components.PlayerComponent
@@ -10,13 +11,16 @@ import com.bubba.uiwidgets.PauseWidget
 import com.bubba.uiwidgets.ScoreWidget
 
 class GameScreenUI(assetManager: AssetManager, playerComponent: PlayerComponent) {
-    private val stage = Stage() // The book uses a FitViewport instead of default ScalingViewport. Switch?
+    val stage = Stage() // The book uses a FitViewport instead of default ScalingViewport. Switch?
     private val crosshairWidget = CrosshairWidget(assetManager)
     private val scoreWidget = ScoreWidget(assetManager, playerComponent)
     private val healthWidget = HealthWidget(assetManager, playerComponent)
     private val pauseWidget = PauseWidget(assetManager, stage)
 
+    private var isShown = false
+
     init {
+
         crosshairWidget.setSize(CrosshairWidget.WIDTH.toFloat(), CrosshairWidget.HEIGHT.toFloat())
         crosshairWidget.setPosition(
             (DropGame.VIRTUAL_WIDTH / 2 - CrosshairWidget.WIDTH / 2).toFloat(),
@@ -41,12 +45,8 @@ class GameScreenUI(assetManager: AssetManager, playerComponent: PlayerComponent)
         stage.act(deltaTime)
     }
 
-    fun showPauseMenu(shouldShow: Boolean) {
-        if (shouldShow) {
-            pauseWidget.showWindow()
-        } else {
-            pauseWidget.hideWindow()
-        }
+    fun toggleShowPauseMenu() {
+        pauseWidget.toggleShowWindow()
     }
 
     fun render() {

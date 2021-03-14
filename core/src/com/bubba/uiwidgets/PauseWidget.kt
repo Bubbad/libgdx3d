@@ -1,5 +1,6 @@
 package com.bubba.uiwidgets
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Actor
@@ -8,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.ui.Window
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.bubba.DropGame
 import com.bubba.SkinAsset
 import com.bubba.get
@@ -18,6 +20,7 @@ class PauseWidget(assetManager: AssetManager, stage: Stage): Actor() {
     private val closeButton = TextButton("X", assetManager.get(SkinAsset.UISkin))
     private val restartButton = TextButton("Restart", assetManager.get(SkinAsset.UISkin))
     private val quitButton = TextButton("Exit", assetManager.get(SkinAsset.UISkin))
+
     private var isShown = false
 
     init {
@@ -26,13 +29,42 @@ class PauseWidget(assetManager: AssetManager, stage: Stage): Actor() {
         window.titleTable.add(closeButton).height(window.padTop)
         window.add(restartButton)
         window.add(quitButton)
+
+        closeButton.addListener(object: ClickListener() {
+            override fun clicked(event: InputEvent, x: Float, y: Float) {
+                toggleShowWindow()
+            }
+        })
+
+        restartButton.addListener(object: ClickListener() {
+            override fun clicked(event: InputEvent, x: Float, y: Float) {
+
+            }
+        })
+
+        quitButton.addListener(object: ClickListener() {
+            override fun clicked(event: InputEvent, x: Float, y: Float) {
+
+            }
+        })
     }
 
-    fun hideWindow() {
+    fun toggleShowWindow() {
+        if (isShown) {
+            hideWindow()
+        } else {
+            showWindow()
+        }
+        isShown = !isShown
+    }
+
+    private fun hideWindow() {
+        Gdx.input.isCursorCatched = true
         window.remove()
     }
 
-    fun showWindow() {
+    private fun showWindow() {
+        Gdx.input.isCursorCatched = false
         stage.addActor(window)
     }
 

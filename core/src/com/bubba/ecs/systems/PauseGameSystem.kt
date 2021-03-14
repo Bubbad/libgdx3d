@@ -6,9 +6,13 @@ import com.badlogic.gdx.Input
 import com.bubba.GameScreenUI
 
 class PauseGameSystem(private val gameScreenUI: GameScreenUI): EntitySystem() {
+
+    private var isShown = false
+
     override fun update(deltaTime: Float) {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            gameScreenUI.showPauseMenu(true)
+            isShown = !isShown
+            gameScreenUI.toggleShowPauseMenu()
         }
     }
 }
