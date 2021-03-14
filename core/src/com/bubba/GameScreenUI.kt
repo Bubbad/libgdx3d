@@ -1,7 +1,5 @@
 package com.bubba
 
-import com.badlogic.ashley.core.Engine
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.bubba.ecs.components.PlayerComponent
@@ -10,12 +8,12 @@ import com.bubba.uiwidgets.HealthWidget
 import com.bubba.uiwidgets.PauseWidget
 import com.bubba.uiwidgets.ScoreWidget
 
-class GameScreenUI(assetManager: AssetManager, playerComponent: PlayerComponent) {
+class GameScreenUI(assetManager: AssetManager, playerComponent: PlayerComponent, game: DropGame) {
     val stage = Stage() // The book uses a FitViewport instead of default ScalingViewport. Switch?
     private val crosshairWidget = CrosshairWidget(assetManager)
     private val scoreWidget = ScoreWidget(assetManager, playerComponent)
     private val healthWidget = HealthWidget(assetManager, playerComponent)
-    private val pauseWidget = PauseWidget(assetManager, stage)
+    private val pauseWidget = PauseWidget(assetManager, stage, game)
 
     private var isShown = false
 

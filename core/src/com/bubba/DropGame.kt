@@ -10,14 +10,13 @@ import ktx.app.KtxScreen
 class DropGame : KtxGame<KtxScreen>() {
 
     companion object {
-        val VIRTUAL_HEIGHT = 640
-        val VIRTUAL_WIDTH = 800
+        const val VIRTUAL_HEIGHT = 640
+        const val VIRTUAL_WIDTH = 800
     }
 
     lateinit var batch: SpriteBatch
     lateinit var font: BitmapFont
     val assets = AssetManager()
-    val engine = Engine()
 
     private lateinit var loadingScreen: LoadingScreen
     private lateinit var gameScreen: GameScreen

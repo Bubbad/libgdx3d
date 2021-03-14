@@ -1,5 +1,6 @@
 package com.bubba
 
+import com.badlogic.ashley.core.Engine
 import com.badlogic.ashley.core.Entity
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
@@ -41,7 +42,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
     private val batch = ModelBatch()
     private val environment = Environment()
     private val font: BitmapFont = dropGame.font
-    private val engine = dropGame.engine
+    private val engine = Engine()
     private val logger = logger<GameScreen>()
 
     private val model: Model
@@ -69,7 +70,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         environment.set(ColorAttribute.createAmbientLight(0.4f, 0.4f, 0.4f, 1.0f))
         environment.add(DirectionalLight().set(Color.WHITE, Vector3(1.0f, -0.8f, -0.2f)))
 
-        gameScreenUI = GameScreenUI(dropGame.assets, playerComponent)
+        gameScreenUI = GameScreenUI(dropGame.assets, playerComponent, dropGame)
         Gdx.input.inputProcessor = gameScreenUI.stage
 
         bulletCollisionSystem = BulletCollisionSystem()

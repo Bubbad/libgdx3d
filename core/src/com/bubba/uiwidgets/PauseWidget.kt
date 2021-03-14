@@ -11,10 +11,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.ui.Window
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.bubba.DropGame
+import com.bubba.GameScreen
+import com.bubba.LoadingScreen
 import com.bubba.SkinAsset
 import com.bubba.get
 
-class PauseWidget(assetManager: AssetManager, stage: Stage): Actor() {
+class PauseWidget(assetManager: AssetManager, stage: Stage, game: DropGame): Actor() {
 
     private val window = Window("Pause", assetManager.get(SkinAsset.UISkin))
     private val closeButton = TextButton("X", assetManager.get(SkinAsset.UISkin))
@@ -38,13 +40,14 @@ class PauseWidget(assetManager: AssetManager, stage: Stage): Actor() {
 
         restartButton.addListener(object: ClickListener() {
             override fun clicked(event: InputEvent, x: Float, y: Float) {
-
+                game.removeScreen(GameScreen::class.java)
+                game.setScreen<LoadingScreen>()
             }
         })
 
         quitButton.addListener(object: ClickListener() {
             override fun clicked(event: InputEvent, x: Float, y: Float) {
-
+                Gdx.app.exit()
             }
         })
     }
