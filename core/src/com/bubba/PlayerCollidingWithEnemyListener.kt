@@ -26,14 +26,14 @@ class PlayerCollidingWithEnemyListener : ContactListener() {
             return
         }
 
-        if (entity0.has(EnemyComponent.mapper)) {
+        if (entity0.has(EnemyComponent.mapper) && entity1.has(PlayerComponent.mapper)) {
             val enemyComponent = entity0[EnemyComponent.mapper]!!
 
             if (enemyComponent.isDead) return
 
             enemyComponent.isDead = true
             entity1[PlayerComponent.mapper]!!.decreaseHealth(10)
-        } else if (entity1.has(EnemyComponent.mapper)) {
+        } else if (entity1.has(EnemyComponent.mapper) && entity0.has(PlayerComponent.mapper)) {
             val enemyComponent = entity1[EnemyComponent.mapper]!!
 
             if (enemyComponent.isDead) return

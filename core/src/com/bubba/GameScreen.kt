@@ -74,7 +74,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         engine.addSystem(ShootSystem(camera, bulletCollisionSystem))
         engine.addSystem(EnemySystem())
         engine.addSystem(KillEnemyOnContactSystem(this))
-        engine.addSystem(EnemySpawnSystem(model, -15f, 25f, -15f, bulletCollisionSystem))
+        engine.addSystem(EnemySpawnSystem(model, 0f, 25f, 0f, bulletCollisionSystem))
         engine.addEntity(EntityFactory.createStaticEntity(model, 0f, 0f, 0f))
         engine.addEntity(EntityFactory.createCharacter(model, 5f, 25f, 5f, bulletCollisionSystem).add(playerComponent))
         createGround()
@@ -93,9 +93,9 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         gameScreenUI.update(delta)
         gameScreenUI.render()
 
-//        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-//            Gdx.input.isCursorCatched = !Gdx.input.isCursorCatched
-//        }
+        if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            Gdx.input.isCursorCatched = !Gdx.input.isCursorCatched
+        }
     }
 
     override fun show() {
@@ -103,7 +103,7 @@ class GameScreen(private val dropGame: DropGame) : KtxScreen {
         engine.addSystem(RenderSystem(camera, environment))
         gameScreenUI = GameScreenUI(dropGame.assets, playerComponent)
 
-        //Gdx.input.isCursorCatched = true
+        Gdx.input.isCursorCatched = true
     }
 
     override fun dispose() {

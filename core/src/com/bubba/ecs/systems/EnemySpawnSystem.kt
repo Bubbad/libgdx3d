@@ -12,8 +12,8 @@ import com.bubba.ecs.components.ModelComponent
 import com.bubba.ecs.entities.EntityFactory
 import kotlin.random.Random
 
-private const val SPAWN_RATE_MS = 5000
-private const val MAX_ENEMIES = 5
+private const val SPAWN_RATE_MS = 1000
+private const val MAX_ENEMIES = 10
 
 class EnemySpawnSystem(
     private val model: Model,
@@ -45,8 +45,8 @@ class EnemySpawnSystem(
     }
 
     private fun spawnEnemy() {
-        val deltaX = (1..3).random()
-        val deltaZ = (1..3).random()
+        val deltaX = (1..20).random()
+        val deltaZ = (1..20).random()
 
         engine.addEntity(EntityFactory.createCharacter(model, x + deltaX, y, z + deltaZ, bulletSystem).add(EnemyComponent()))
     }
